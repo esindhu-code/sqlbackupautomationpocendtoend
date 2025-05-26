@@ -1,0 +1,20 @@
+module "stage-cloudsql-backup-automation" {
+  source               = "app.terraform.io/fig-tlz/stage-cloudsql-backup-automation/google"
+  version              = "1.0.0"
+  project_id           = "c000006-dev-platform-testing"        
+  region               = "us-central1"
+  topic_name           = "test1-backup-pubsub-message-topic"
+  bucket_name          = "my-function-bucket1"
+  object_name          = "function.zip"
+  function_name        = "test1-process-pubsub-message"
+  runtime              = "python310"
+  entry_point          = "process_pubsub_message"
+  timeout              = "540s"
+  service_account_email = "600829541275-compute@developer.gserviceaccount.com"
+  scheduler_job_name   = "test1-backup-trigger-job"
+  schedule             = "0 22 * * *"
+  time_zone            = "Asia/Kolkata"
+  message              = "Automated backups job"
+  instance_id          = "autobackup-testing"      
+}
+ 
