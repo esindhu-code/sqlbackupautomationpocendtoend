@@ -1,0 +1,94 @@
+# Terraform Module for Cloud Function and Cloud Scheduler with Pub/Sub Integration to automate the sqlbackups
+
+This module automates the deployment of a Google Cloud Function that is triggered by a Pub/Sub topic. It also sets up a Cloud Scheduler job to publish messages to the Pub/Sub topic. The module ensures the required supporting resources, such as storage buckets and Pub/Sub topics, are created and configured.
+
+---
+
+## Features
+
+- Creates a **Pub/Sub Topic** for triggering the Cloud Function.
+- Provisions a **Cloud Storage Bucket** to store the Cloud Function source code.
+- Deploys a **Cloud Function** with customizable runtime, memory, and entry point.
+- Configures the Cloud Function with an **event trigger** based on Pub/Sub.
+- Sets up a **Cloud Scheduler Job** to publish messages to the Pub/Sub topic on a defined schedule.
+
+---
+
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Usage](#usage)
+- [Inputs](#inputs)
+- [Outputs](#outputs)
+---
+
+## Prerequisites
+
+- **Terraform**: Version 1.0 or newer.
+- **Google Cloud SDK**: Installed and authenticated.
+- **GCP Project**: Ensure the project has the necessary permissions to create:
+  - Pub/Sub Topics
+  - Cloud Storage Buckets
+  - Cloud Functions
+  - Cloud Scheduler Jobs
+
+---
+
+## Usage
+
+### Example Configuration
+
+```hcl
+module "cloud_function_with_scheduler" {
+  source                  = "./path-to-this-module"
+
+  project_id              = "my-gcp-project-id"
+  region                  = "us-central1"
+  service_account_email   = "my-service-account@my-gcp-project-id.iam.gserviceaccount.com"
+  bucket_name             = "my-function-source-bucket"
+  object_name             = "function.zip"
+  function_name           = "my-cloud-function"
+  runtime                 = "python310"
+  entry_point             = "main"
+  timeout                 = "540s"
+  scheduler_job_name      = "my-scheduler-job"
+  schedule                = "*/5 * * * *"
+  time_zone               = "America/Los_Angeles"
+  message                 = "Hello from Cloud Scheduler"
+  topic_name              = "my-pubsub-topic"
+  instance_id             = "my-cloud-sql-instance"
+}
+```
+
+## Inputs
+
+| Name                     | Type   | Description                                                                 | Default              |
+|--------------------------|--------|-----------------------------------------------------------------------------|----------------------|
+| `project_id`             | string | The GCP Project ID.                                                        | n/a (required)       |
+| `region`                 | string | The GCP region where resources will be created.                            | n/a (required)       |
+| `service_account_email`  | string | The email of the service account used by the Cloud Function.               | n/a (required)       |
+| `bucket_name`            | string | The base name of the Cloud Storage bucket for the function source.          | n/a (required)       |
+| `object_name`            | string | The name of the zipped function source object.                             | n/a (required)       |
+| `function_name`          | string | The name of the Cloud Function.                                            | n/a (required)       |
+| `entry_point`            | string | The entry point for the Cloud Function.                                    | n/a (required)       |
+| `runtime`                | string | The runtime for the Cloud Function (e.g., `python310`).                    | n/a (required)       |
+| `timeout`                | string | The timeout for the Cloud Function (e.g., `540s`).                         | n/a (required)       |
+| `scheduler_job_name`     | string | The name of the Cloud Scheduler job.                                       | n/a (required)       |
+| `schedule`               | string | The cron schedule for the Cloud Scheduler job.                             | n/a (required)       |
+| `time_zone`              | string | The time zone for the Cloud Scheduler job.                                 | n/a (required)       |
+| `message`                | string | The payload sent to Pub/Sub by the Cloud Scheduler.                        | n/a (required)       |
+| `topic_name`             | string | The name of the Pub/Sub topic.                                             | n/a (required)       |
+| `instance_id`            | string | The ID of the Cloud SQL instance included in the Pub/Sub message payload.  | n/a (required)       |
+
+---
+
+## Outputs
+
+| Name           | Description                                          |
+|----------------|------------------------------------------------------|
+| `topic_name`   | The name of the Pub/Sub topic created by the module. |
+| `function_url` | The name of the Cloud Function created.              |
+
+
+
+ 
