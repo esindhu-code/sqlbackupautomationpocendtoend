@@ -1,3 +1,4 @@
+import os
 import json
 import logging
 import time
@@ -10,9 +11,9 @@ from datetime import datetime, timezone  # Import datetime and timezone
 cloud_logging.Client().setup_logging()
 
 # Constants
-PROJECT_ID = "c000006-dev-platform-testing"
+PROJECT_ID = os.environ.get("PROJECT_ID", "default-project-id")
 RETRY_LIMIT = 3  # Number of retry attempts for failed backups
-ALERT_TOPIC = "projects/c000006-dev-platform-testing/topics/test-backup-pubsub-message-topic"  # Pub/Sub alert topic
+ALERT_TOPIC = os.environ.get("ALERT_TOPIC", "default-alert-topic") # Pub/Sub alert topic
 
 def get_sql_admin_service():
     """Create Cloud SQL Admin API service client."""
