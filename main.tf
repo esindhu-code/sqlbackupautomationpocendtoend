@@ -40,6 +40,10 @@ resource "google_cloudfunctions2_function" "function" {
         object = google_storage_bucket_object.function_zip.name
       }
     }
+    environment_variables = {
+      PROJECT_ID  = var.project_id
+      ALERT_TOPIC = google_pubsub_topic.topic.id
+    }
   }
 
   service_config {
